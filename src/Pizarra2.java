@@ -65,8 +65,7 @@ public class Pizarra2 extends javax.swing.JFrame {
     }
 
     @Override
-    public void paint(Graphics g){        
-        
+    public void paint(Graphics g){                
         Image output = raster.toImage(this);
         g.drawImage(output, 0, 0, this);        
     }
