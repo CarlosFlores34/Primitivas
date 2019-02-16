@@ -21,13 +21,13 @@ public class Pizarra extends javax.swing.JFrame {
      */
     Point p1, p2;
     boolean bDibujar;
-   
             
     public Pizarra() {
         initComponents();
         p1 = new Point();
         p2 = new Point();        
         bDibujar = false;
+    
     }
 
     /**
@@ -92,9 +92,7 @@ public class Pizarra extends javax.swing.JFrame {
             p2.y=evt.getY();            
             dibujarLinea(p1,p2);
             bDibujar = false;
-        }
-        
-        
+        }                
     }//GEN-LAST:event_jPanel1MouseClicked
 
     /**
