@@ -15,6 +15,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -53,7 +56,17 @@ public class Pizarra2 extends javax.swing.JFrame {
                                         public void mouseClicked(MouseEvent evt) {
                                                 jPanel1MouseClicked(evt);
                                         }                               
-                                });        
+                                }); 
+        
+        
+        this.addKeyListener(new KeyAdapter(){
+                                       @Override
+                                       public void keyReleased(KeyEvent ke){
+                                             
+                                                 jPanel1KeyReleased();
+                                             
+                                       }
+                                 });
         this.setBackground(Color.white);
         this.setVisible(true);
         
@@ -186,7 +199,18 @@ public class Pizarra2 extends javax.swing.JFrame {
             dibujarLinea(p1,p2,Color.red);
             bDibujar = false;
         }                
-    }       
+    }  
+    
+    public void jPanel1KeyReleased() {                                     
+        // TODO add your handling code here:
+        Vertex2D v1 = new Vertex2D((float)10.0,(float) 10.0,Color.red.getRGB());
+        Vertex2D v2 = new Vertex2D((float)20.0,(float) 20.0,Color.red.getRGB());
+        Vertex2D v3 = new Vertex2D((float)10.0,(float) 30.0,Color.red.getRGB());
+        
+        TrianguloR tri = new TrianguloR(v1,v2,v3);  
+
+        tri.dibujar(raster);
+    } 
                       
     /**
      * @param args the command line arguments
@@ -219,7 +243,8 @@ public class Pizarra2 extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Pizarra2 pizarra = new Pizarra2();
-                pizarra.setVisible(true);                                                
+                pizarra.setVisible(true);
+                
             }
         });
     }
