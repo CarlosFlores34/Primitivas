@@ -148,6 +148,7 @@ public class Pizarra2 extends javax.swing.JFrame {
         paint(g);
     }
     
+     @Override
     public void paint(Graphics g){        
         if( firstTime ) {   
             firstTime = false;
