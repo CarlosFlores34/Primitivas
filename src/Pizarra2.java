@@ -83,8 +83,7 @@ public class Pizarra2 extends javax.swing.JFrame {
         
         raster = new Raster(ANCHO,ALTO);        
         
-        panelRaster = new JPanel();
-        panelRaster.setSize(ANCHO, ALTO);
+        panelRaster = new MyPanel(raster);
         
         panelControles = new JPanel();
         
@@ -95,9 +94,8 @@ public class Pizarra2 extends javax.swing.JFrame {
         
         color = Color.black;
         
-        btnGuardar = new JButton("Guardar");
-        
-        btnColor = new JButton("Color");
+        btnGuardar = new JButton("Guardar");        
+        btnColor   = new JButton("Color");
         
         btnColor.setBorderPainted(false);
         btnColor.setFocusPainted(false);
@@ -192,25 +190,7 @@ public class Pizarra2 extends javax.swing.JFrame {
         }
                 
     }
-    
-    @Override
-    public void update(Graphics g){
-        paint(g);
-    }
-    
-     @Override
-    public void paint(Graphics g){        
-        if( firstTime ) {   
-            firstTime = false;
-            //super.paint(g);
-        }
-        
-        super.paint(g);
-        
-        Image output =  raster.toImage(this);
-        g.drawImage(output, 0, 0, this);
-        this.panelControles.paint(g);
-    }
+       
     
     public void clear() {	
         int s = raster.size();
