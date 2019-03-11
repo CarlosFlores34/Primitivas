@@ -25,12 +25,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JColorChooser;
+import javax.swing.JToggleButton;
 
 public class Pizarra2 extends javax.swing.JFrame {
     /**
@@ -56,13 +63,16 @@ public class Pizarra2 extends javax.swing.JFrame {
     JPanel        panelControles;
     
     JButton       btnColor;
-    JRadioButton  rbLinea;
-    JRadioButton  rbTriang;
+    JToggleButton  rbLinea;
+    JToggleButton  rbTriang;
     
     ButtonGroup   bg;
     
     Color         color;
     JColorChooser colorChooser;
+    JButton btnGuardar;
+    
+    ArrayList<Figura> aFiguras = new ArrayList();
         
     public Pizarra2() {      
         p1 = new Point();
@@ -84,7 +94,8 @@ public class Pizarra2 extends javax.swing.JFrame {
         this.setLayout(new BorderLayout());       
         
         color = Color.black;
-                       
+        
+        btnGuardar = new JButton("Guardar");
         
         btnColor = new JButton("Color");
         
@@ -94,8 +105,8 @@ public class Pizarra2 extends javax.swing.JFrame {
         btnColor.setBackground(color);
         btnColor.setForeground(color);
         
-        rbLinea  = new JRadioButton("Linea");
-        rbTriang = new JRadioButton("Triangulo");
+        rbLinea  = new JToggleButton("Linea");
+        rbTriang = new JToggleButton("Triangulo");
     
         bg = new ButtonGroup();
         
@@ -109,6 +120,7 @@ public class Pizarra2 extends javax.swing.JFrame {
         this.panelControles.add(rbLinea);
         this.panelControles.add(rbTriang);
         this.panelControles.add(btnColor);
+        this.panelControles.add(btnGuardar);
         
         
         this.add(panelControles,BorderLayout.SOUTH);
@@ -137,10 +149,48 @@ public class Pizarra2 extends javax.swing.JFrame {
                                                         btnColor.setBackground(color);
                                                 }
                                 });
+
+        this.btnGuardar.addActionListener(new ActionListener(){
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                        guardarImagen();
+                                                }
+                                });
+                
         
         this.setVisible(true);
         this.pack();
         
+    }
+    
+    public static BufferedImage toBufferedImage(Image img){
+        if (img instanceof BufferedImage)
+        {
+            return (BufferedImage) img;
+        }
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        // Return the buffered image
+        return bimage;
+    }
+    
+    public void guardarImagen(){
+        
+        BufferedImage img = toBufferedImage(raster.toImage(this));        
+        try {                        
+            File outputfile = new File("saved.png");
+            ImageIO.write(img, "png", outputfile);
+        } catch (IOException e) {
+          
+        }
+                
     }
     
     @Override
@@ -152,8 +202,10 @@ public class Pizarra2 extends javax.swing.JFrame {
     public void paint(Graphics g){        
         if( firstTime ) {   
             firstTime = false;
-            super.paint(g);
+            //super.paint(g);
         }
+        
+        super.paint(g);
         
         Image output =  raster.toImage(this);
         g.drawImage(output, 0, 0, this);
@@ -202,14 +254,15 @@ public class Pizarra2 extends javax.swing.JFrame {
                 x0 += dx;
                 raster.setPixel(pix, x0, Math.round(m*x0 + b));
             }
-        } else
-        if (dy != 0) {                         // inclinacion >= 1
-            float m = (float) dx / (float) dy; // Calcular inclinacion
-            float b = x0 - m*y0;
-            dy = (dy < 0) ? -1 : 1;
-            while (y0 != y1) {
-                y0 += dy;
-                raster.setPixel(pix, Math.round(m*y0 + b), y0);
+        } else {
+            if (dy != 0) {                         // inclinacion >= 1
+                float m = (float) dx / (float) dy; // Calcular inclinacion
+                float b = x0 - m*y0;
+                dy = (dy < 0) ? -1 : 1;
+                while (y0 != y1) {
+                    y0 += dy;
+                    raster.setPixel(pix, Math.round(m*y0 + b), y0);
+                }
             }
         }
     }
