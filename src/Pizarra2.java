@@ -243,7 +243,7 @@ public class Pizarra2 extends javax.swing.JFrame {
                 } 
                 
                 if (f instanceof TrianguloR){
-                   TrianguloR t = (TrianguloR)f;
+                   TrianguloR t = (TrianguloR)f;                   
                    linea=String.format("T,%d,%d,%d,%d,%d,%d,%d",t.v[0].x,t.v[0].y,t.v[1].x,t.v[1].y,t.v[2].x,t.v[2].y,t.color.getRGB());                
                 }
                 

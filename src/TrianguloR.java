@@ -19,9 +19,10 @@ public class TrianguloR extends Figura {
     {
     }
     
-    public TrianguloR(Vertex2D v0, Vertex2D v1, Vertex2D v2, Color color)
+    public TrianguloR(Vertex2D v0, Vertex2D v1, Vertex2D v2, Color _color)
     {
-        color_int = color.getRGB();
+        color_int = _color.getRGB();
+        color = color;
         
         v = new Vertex2D[3];
         v[0] = v0;
