@@ -30,14 +30,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JColorChooser;
+import javax.swing.JList;
+import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
+import javax.swing.ListModel;
+import javax.swing.event.ListDataListener;
 
 public class Pizarra2 extends javax.swing.JFrame {
     /**
@@ -61,6 +67,10 @@ public class Pizarra2 extends javax.swing.JFrame {
     
     JPanel        panelRaster;
     JPanel        panelControles;
+    JPanel        panelFiguras;
+    
+    JList         listFiguras;
+    ListModel<Figura> listModel;
     
     JButton       btnColor;
     JToggleButton  rbLinea;
@@ -70,9 +80,8 @@ public class Pizarra2 extends javax.swing.JFrame {
     
     Color         color;
     JColorChooser colorChooser;
-    JButton btnGuardar;
-    
-    ArrayList<Figura> aFiguras = new ArrayList();
+    JButton       btnGuardar;
+   
         
     public Pizarra2() {      
         p1 = new Point();
@@ -86,8 +95,16 @@ public class Pizarra2 extends javax.swing.JFrame {
         panelRaster = new MyPanel(raster);
         
         panelControles = new JPanel();
+        panelControles.setLayout(new BoxLayout(panelControles,BoxLayout.Y_AXIS));
         
-        this.setPreferredSize(new Dimension(ANCHO+50,ALTO+50));
+        panelFiguras = new JPanel();
+        listModel = new DefaultListModel();
+        
+        listFiguras = new JList();        
+        listFiguras.setModel(listModel);
+                       
+        panelFiguras.add(listFiguras);
+                
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         
         this.setLayout(new BorderLayout());       
@@ -117,11 +134,13 @@ public class Pizarra2 extends javax.swing.JFrame {
 
         this.panelControles.add(rbLinea);
         this.panelControles.add(rbTriang);
+        this.panelControles.add(new JSeparator());
         this.panelControles.add(btnColor);
+
         this.panelControles.add(btnGuardar);
         
-        
-        this.add(panelControles,BorderLayout.SOUTH);
+        this.add(panelFiguras,BorderLayout.EAST);
+        this.add(panelControles,BorderLayout.WEST);
 
         this.panelRaster.addMouseListener(new MouseAdapter(){
                                         @Override

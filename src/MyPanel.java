@@ -25,6 +25,7 @@ class MyPanel extends JPanel {
 
     public MyPanel(Raster _raster) {
         prefSize = new Dimension(_raster.width,_raster.height);
+        this.setSize(prefSize);
         this.raster = _raster;
         setBorder(BorderFactory.createLineBorder(Color.black));
     }
