@@ -27,8 +27,11 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -69,18 +72,20 @@ public class Pizarra2 extends javax.swing.JFrame {
     JPanel        panelControles;
     JPanel        panelFiguras;
     
-    JList         listFiguras;
-    ListModel<Figura> listModel;
+    JList             listFiguras;
+    DefaultListModel  listModel;    
+    ArrayList<Figura> aFiguras;
     
     JButton       btnColor;
-    JToggleButton  rbLinea;
-    JToggleButton  rbTriang;
+    JToggleButton rbLinea;
+    JToggleButton rbTriang;
     
     ButtonGroup   bg;
     
     Color         color;
     JColorChooser colorChooser;
-    JButton       btnGuardar;
+    JButton       btnGuardarRast;
+    JButton       btnGuardarVect;
    
         
     public Pizarra2() {      
@@ -96,14 +101,6 @@ public class Pizarra2 extends javax.swing.JFrame {
         
         panelControles = new JPanel();
         panelControles.setLayout(new BoxLayout(panelControles,BoxLayout.Y_AXIS));
-        
-        panelFiguras = new JPanel();
-        listModel = new DefaultListModel();
-        
-        listFiguras = new JList();        
-        listFiguras.setModel(listModel);
-                       
-        panelFiguras.add(listFiguras);
                 
         this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         
@@ -111,8 +108,9 @@ public class Pizarra2 extends javax.swing.JFrame {
         
         color = Color.black;
         
-        btnGuardar = new JButton("Guardar");        
-        btnColor   = new JButton("Color");
+        btnGuardarRast = new JButton("Guardar"); 
+        btnGuardarVect = new JButton("Guardar");
+        btnColor       = new JButton("Color");
         
         btnColor.setBorderPainted(false);
         btnColor.setFocusPainted(false);
@@ -137,7 +135,22 @@ public class Pizarra2 extends javax.swing.JFrame {
         this.panelControles.add(new JSeparator());
         this.panelControles.add(btnColor);
 
-        this.panelControles.add(btnGuardar);
+        this.panelControles.add(btnGuardarRast);
+        
+        // Ahora el pane de figuras
+        panelFiguras = new JPanel();
+        panelFiguras.setLayout(new BoxLayout(panelFiguras,BoxLayout.Y_AXIS));       
+                        
+        listFiguras = new JList(); 
+        listFiguras.setModel(new DefaultListModel());
+        listModel = (DefaultListModel) listFiguras.getModel();
+        
+        panelFiguras.add(listFiguras);
+        panelFiguras.add(new JSeparator());
+        panelFiguras.add(btnGuardarVect);
+        
+        aFiguras = new ArrayList<Figura>();        
+        
         
         this.add(panelFiguras,BorderLayout.EAST);
         this.add(panelControles,BorderLayout.WEST);
@@ -167,13 +180,20 @@ public class Pizarra2 extends javax.swing.JFrame {
                                                 }
                                 });
 
-        this.btnGuardar.addActionListener(new ActionListener(){
+        this.btnGuardarRast.addActionListener(new ActionListener(){
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
                                                         guardarImagen();
                                                 }
                                 });
-                
+
+        this.btnGuardarVect.addActionListener(new ActionListener(){
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                        guardarVectores();
+                                                }
+                                });        
+        
         
         this.setVisible(true);
         this.pack();
@@ -206,11 +226,40 @@ public class Pizarra2 extends javax.swing.JFrame {
             ImageIO.write(img, "png", outputfile);
         } catch (IOException e) {
           
-        }
-                
+        }                
     }
-       
     
+    public void guardarVectores() {        
+        FileWriter fw = null;
+        String linea="";
+        try {
+            fw = new FileWriter("vectores.txt");
+            for(int i=0;i<aFiguras.size();i++){
+                Figura f = aFiguras.get(i);
+                
+                if (f instanceof Linea){
+                   Linea l = (Linea)f;
+                   linea=String.format("L,%d,%d,%d,%d,%d",l.punto1.getX(),l.punto1.getY(),l.punto2.getX(),l.punto2.getY(),l.color.getRGB());
+                } 
+                
+                if (f instanceof TrianguloR){
+                   TrianguloR t = (TrianguloR)f;
+                   linea=String.format("T,%d,%d,%d,%d,%d,%d,%d",t.v[0].x,t.v[0].y,t.v[1].x,t.v[1].y,t.v[2].x,t.v[2].y,t.color.getRGB());                
+                }
+                
+                fw.write(linea);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Pizarra2.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Pizarra2.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }        
+    }    
+           
     public void clear() {	
         int s = raster.size();
         for (int i = 0; i < s; i++) {
@@ -297,14 +346,14 @@ public class Pizarra2 extends javax.swing.JFrame {
     private void dibujarLinea(Point _p1, Point _p2, Color color) {
              long inicio=0, fin=0;
              inicio = System.nanoTime();
-             lineaMejorada(_p1.x,_p1.y,_p2.x,_p2.y,color);
+             // lineaMejorada(_p1.x,_p1.y,_p2.x,_p2.y,color);
              fin    = System.nanoTime();
              
              System.out.printf("Tiempo transcurrido, simple: %d\n",(fin-inicio));
              
              inicio = System.nanoTime();
              lineFast(_p1.x,_p1.y,_p2.x,_p2.y,color);
-             fin    = System.nanoTime();
+             fin    = System.nanoTime();            
              
              System.out.printf("Tiempo transcurrido, fast  : %d\n",(fin-inicio));             
     }    
@@ -316,9 +365,12 @@ public class Pizarra2 extends javax.swing.JFrame {
         Vertex2D v2 = new Vertex2D(p2.x,p2.y,c.getRGB());
         Vertex2D v3 = new Vertex2D(p3.x,p3.y,c.getRGB());
         
-        TrianguloR tri = new TrianguloR(v1,v2,v3);  
+        TrianguloR tri = new TrianguloR(v1,v2,v3,c);  
 
         tri.dibujar(raster);
+        
+        aFiguras.add(tri);
+        listModel.addElement("Triangulo");
 
     }
     
@@ -340,6 +392,12 @@ public class Pizarra2 extends javax.swing.JFrame {
             bP2 = true;                       
             System.out.println("Segundo punto");
             dibujarLinea(p2,p2,color);
+            
+            if(figura == LINEA){
+                Linea l = new Linea(p1,p2, color);            
+                aFiguras.add(l);
+                listModel.addElement("Linea");            
+            }
         } 
         
         if (!bP1){

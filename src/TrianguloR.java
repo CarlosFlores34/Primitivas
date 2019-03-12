@@ -1,3 +1,6 @@
+
+import java.awt.Color;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,16 +11,18 @@
  *
  * @author macpro1
  */
-public class TrianguloR {
+public class TrianguloR extends Figura {
     protected Vertex2D v[];
-    protected int color;
+    protected int color_int;
     
     public TrianguloR()
     {
     }
     
-    public TrianguloR(Vertex2D v0, Vertex2D v1, Vertex2D v2)
+    public TrianguloR(Vertex2D v0, Vertex2D v1, Vertex2D v2, Color color)
     {
+        color_int = color.getRGB();
+        
         v = new Vertex2D[3];
         v[0] = v0;
         v[1] = v1;
@@ -37,7 +42,7 @@ public class TrianguloR {
         g = (g + g + 3) / 6;
         b = (b + b + 3) / 6;
         
-        color = (a << 24) | (r << 16) | (g << 8) | b;
+        color_int = (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     
@@ -79,7 +84,7 @@ public class TrianguloR {
 	        int xflag = 0;
 	        for (x = xMin; x <= xMax; x++) {
 	            if ((e0|e1|e2) >= 0) {      // all 3 edges must be >= 0
-		            r.pixel[y+x] = color;
+		            r.pixel[y+x] = color_int;
 		            xflag++;
 	            } else if (xflag != 0) break;
 	            e0 += A0;
