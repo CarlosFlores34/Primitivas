@@ -9,10 +9,10 @@
  * @author macpro1
  */
 public class Vertex2D {
-    public float x, y;              // coordenada oe vertex
+    public int x, y;              // coordenada oe vertex
     public int argb;                // color de vertex
     
-    public Vertex2D(float xval, float yval, int cval)
+    public Vertex2D(int xval, int yval, int cval)
     {
         x = xval;
         y = yval;

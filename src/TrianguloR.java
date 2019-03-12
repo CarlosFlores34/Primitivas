@@ -21,18 +21,14 @@ public class TrianguloR extends Figura {
     
     public TrianguloR(Vertex2D v0, Vertex2D v1, Vertex2D v2, Color _color)
     {
+        color = _color;        
         color_int = _color.getRGB();
-        color = color;
         
         v = new Vertex2D[3];
         v[0] = v0;
         v[1] = v1;
         v[2] = v2;
         
-        /*
-            ... Our policy is to assign a triangle
-            the average of it's vertex colors ...
-        */
         int a = ((v0.argb >> 24) & 255) + ((v1.argb >> 24) & 255) + ((v2.argb >> 24) & 255);
         int r = ((v0.argb >> 16) & 255) + ((v1.argb >> 16) & 255) + ((v2.argb >> 16) & 255);
         int g = ((v0.argb >> 8) & 255) + ((v1.argb >> 8) & 255) + ((v2.argb >> 8) & 255);
@@ -74,17 +70,14 @@ public class TrianguloR extends Figura {
         
         yMin *= r.width;
         yMax *= r.width;
-        
-        /*
-             .... scan convert triangle ....
-        */
+                
         for (y = yMin; y <= yMax; y += r.width) {
 	        int e0 = t0;
 	        int e1 = t1;
 	        int e2 = t2;
 	        int xflag = 0;
 	        for (x = xMin; x <= xMax; x++) {
-	            if ((e0|e1|e2) >= 0) {      // all 3 edges must be >= 0
+	            if ((e0|e1|e2) >= 0) {      
 		            r.pixel[y+x] = color_int;
 		            xflag++;
 	            } else if (xflag != 0) break;
@@ -96,7 +89,7 @@ public class TrianguloR extends Figura {
 	        t1 += B1;
 	        t2 += B2;
         }
-        System.out.println("Se dibujo!");
+        
     }
     
 protected boolean inicializarTriangulo(Raster r)

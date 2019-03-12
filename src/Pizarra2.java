@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JColorChooser;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.ListModel;
@@ -58,19 +59,18 @@ public class Pizarra2 extends javax.swing.JFrame {
 
     static final int ANCHO     = 640;
     static final int ALTO      = 480;
-        
+    
+    Raster  raster;    
+    
     Point   p1, p2, p3;
     boolean bP1=false, bP2=false, bP3=false;
-    
-    Raster  raster;
-       
-    boolean firstTime=true;
+    int     figura = LINEA;    
          
-    int figura = LINEA;
-    
-    JPanel        panelRaster;
-    JPanel        panelControles;
-    JPanel        panelFiguras;
+        
+    JPanel      panelRaster;
+    JPanel      panelControles;
+    JPanel      panelFiguras;
+    JScrollPane scrollFiguras;
     
     JList             listFiguras;
     DefaultListModel  listModel;    
@@ -86,8 +86,7 @@ public class Pizarra2 extends javax.swing.JFrame {
     JColorChooser colorChooser;
     JButton       btnGuardarRast;
     JButton       btnGuardarVect;
-   
-        
+           
     public Pizarra2() {      
         p1 = new Point();
         p2 = new Point();        
@@ -108,8 +107,7 @@ public class Pizarra2 extends javax.swing.JFrame {
         
         color = Color.black;
         
-        btnGuardarRast = new JButton("Guardar"); 
-        btnGuardarVect = new JButton("Guardar");
+        btnGuardarRast = new JButton("Guardar");   
         btnColor       = new JButton("Color");
         
         btnColor.setBorderPainted(false);
@@ -138,20 +136,27 @@ public class Pizarra2 extends javax.swing.JFrame {
         this.panelControles.add(btnGuardarRast);
         
         // Ahora el pane de figuras
-        panelFiguras = new JPanel();
+        
+        btnGuardarVect = new JButton("Guardar");
+        
+        scrollFiguras = new JScrollPane();
+        panelFiguras  = new JPanel();
+        
         panelFiguras.setLayout(new BoxLayout(panelFiguras,BoxLayout.Y_AXIS));       
                         
         listFiguras = new JList(); 
         listFiguras.setModel(new DefaultListModel());
         listModel = (DefaultListModel) listFiguras.getModel();
         
-        panelFiguras.add(listFiguras);
+        scrollFiguras.setViewportView(listFiguras);
+                
+        scrollFiguras.setPreferredSize(new Dimension(50,100));
+        panelFiguras.add(scrollFiguras);
         panelFiguras.add(new JSeparator());
         panelFiguras.add(btnGuardarVect);
         
         aFiguras = new ArrayList<Figura>();        
-        
-        
+                
         this.add(panelFiguras,BorderLayout.EAST);
         this.add(panelControles,BorderLayout.WEST);
 
@@ -218,6 +223,14 @@ public class Pizarra2 extends javax.swing.JFrame {
         return bimage;
     }
     
+    
+    public static Color hex2Rgb(String colorStr) {
+        return new Color(
+                Integer.valueOf( colorStr.substring( 1, 3 ), 16 ),
+                Integer.valueOf( colorStr.substring( 3, 5 ), 16 ),
+                Integer.valueOf( colorStr.substring( 5, 7 ), 16 ) );
+    }    
+    
     public void guardarImagen(){
         
         BufferedImage img = toBufferedImage(raster.toImage(this));        
@@ -238,13 +251,18 @@ public class Pizarra2 extends javax.swing.JFrame {
                 Figura f = aFiguras.get(i);
                 
                 if (f instanceof Linea){
-                   Linea l = (Linea)f;
-                   linea=String.format("L,%d,%d,%d,%d,%d",l.punto1.getX(),l.punto1.getY(),l.punto2.getX(),l.punto2.getY(),l.color.getRGB());
+                    Linea l = (Linea)f;
+                    linea=String.format("L,%.0f,%.0f,%.0f,%.0f,%x\n",l.punto1.getX(),l.punto1.getY(),
+                                                          l.punto2.getX(),l.punto2.getY(),
+                                                          l.color.getRGB());
                 } 
                 
                 if (f instanceof TrianguloR){
-                   TrianguloR t = (TrianguloR)f;                   
-                   linea=String.format("T,%d,%d,%d,%d,%d,%d,%d",t.v[0].x,t.v[0].y,t.v[1].x,t.v[1].y,t.v[2].x,t.v[2].y,t.color.getRGB());                
+                    TrianguloR t = (TrianguloR)f;                   
+                    linea=String.format("T,%d,%d,%d,%d,%d,%d,%x\n",t.v[0].x,t.v[0].y,
+                                                                  t.v[1].x,t.v[1].y,
+                                                                  t.v[2].x,t.v[2].y,
+                                                                  t.color_int);                       
                 }
                 
                 fw.write(linea);
@@ -365,11 +383,12 @@ public class Pizarra2 extends javax.swing.JFrame {
         Vertex2D v2 = new Vertex2D(p2.x,p2.y,c.getRGB());
         Vertex2D v3 = new Vertex2D(p3.x,p3.y,c.getRGB());
         
-        TrianguloR tri = new TrianguloR(v1,v2,v3,c);  
+        TrianguloR tri = new TrianguloR(v1,v2,v3,c);
 
         tri.dibujar(raster);
         
-        aFiguras.add(tri);
+        aFiguras.add(tri);               
+        
         listModel.addElement("Triangulo");
 
     }
