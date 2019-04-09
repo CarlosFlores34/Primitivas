@@ -16,10 +16,10 @@ public class Matrix {
     
     Matrix(){
         // Matriz Identidad
-        clearMatrix();
+        loadIdentity();
     }
     
-    double[] producto(double punto[]){
+    double[] pprima(double punto[]){
         double[] res = new double[3];
         
         xp = punto[0]*matrix[0][0]+punto[1]*matrix[0][1]+punto[2]*matrix[0][2];     // | X | =  | A  B  C |   | x |
@@ -33,7 +33,27 @@ public class Matrix {
         return res;
     }
     
-    void clearMatrix(){
+    double[][] producto(double matrizMul[][],double matriz[][]){
+        double[][] resultante = new double[3][3];
+        
+        resultante[0][0] = matriz[0][0]*matrizMul[0][0] + matriz[1][0]*matrizMul[0][1] + matriz[2][0]*matrizMul[0][2];
+        resultante[1][0] = matriz[0][0]*matrizMul[1][0] + matriz[1][0]*matrizMul[1][1] + matriz[2][0]*matrizMul[1][2];
+        resultante[2][0] = matriz[0][0]*matrizMul[2][0] + matriz[1][0]*matrizMul[2][1] + matriz[2][0]*matrizMul[2][2];
+
+        resultante[0][1] = matriz[0][1]*matrizMul[0][0] + matriz[1][1]*matrizMul[0][1] + matriz[2][1]*matrizMul[0][2];
+        resultante[1][1] = matriz[0][1]*matrizMul[1][0] + matriz[1][1]*matrizMul[1][1] + matriz[2][1]*matrizMul[1][2];
+        resultante[2][1] = matriz[0][1]*matrizMul[2][0] + matriz[1][1]*matrizMul[2][1] + matriz[2][1]*matrizMul[2][2];
+
+        resultante[0][2] = matriz[0][2]*matrizMul[0][0] + matriz[1][2]*matrizMul[0][1] + matriz[2][2]*matrizMul[0][2];
+        resultante[1][2] = matriz[0][2]*matrizMul[1][0] + matriz[1][2]*matrizMul[1][1] + matriz[2][2]*matrizMul[1][2];
+        resultante[2][2] = matriz[0][2]*matrizMul[2][0] + matriz[1][2]*matrizMul[2][1] + matriz[2][2]*matrizMul[2][2];
+                    
+        
+        return resultante;
+    }
+    
+        
+    void loadIdentity(){
                 // Matriz Identidad
         matrix[0][0] = 1;
         matrix[0][1] = 0;
@@ -48,56 +68,70 @@ public class Matrix {
     
     void escalar(int escala){
         // Matriz Identidad
-        matrix[0][0] = escala;
-        matrix[0][1] = 0;
-        matrix[0][2] = 0;
-        matrix[1][0] = 0;
-        matrix[1][1] = escala;
-        matrix[1][2] = 0;
-        matrix[2][0] = 0;
-        matrix[2][1] = 0;
-        matrix[2][2] = 1;
+        double[][] matrizEscala = new double[3][3];
+        
+        matrizEscala[0][0] = escala;
+        matrizEscala[0][1] = 0;
+        matrizEscala[0][2] = 0;
+        matrizEscala[1][0] = 0;
+        matrizEscala[1][1] = escala;
+        matrizEscala[1][2] = 0;
+        matrizEscala[2][0] = 0;
+        matrizEscala[2][1] = 0;
+        matrizEscala[2][2] = 1;
+        
+        matrix = producto(matrizEscala,matrix);
+                
     }    
     
     void escalarXY(int escalaX, int escalaY){
-        // Matriz Identidad
-        matrix[0][0] = escalaX;
-        matrix[0][1] = 0;
-        matrix[0][2] = 0;
-        matrix[1][0] = 0;
-        matrix[1][1] = escalaY;
-        matrix[1][2] = 0;
-        matrix[2][0] = 0;
-        matrix[2][1] = 0;
-        matrix[2][2] = 1;
+        double[][] matrizEscala = new double[3][3];
+        
+        matrizEscala[0][0] = escalaX;
+        matrizEscala[0][1] = 0;
+        matrizEscala[0][2] = 0;
+        matrizEscala[1][0] = 0;
+        matrizEscala[1][1] = escalaY;
+        matrizEscala[1][2] = 0;
+        matrizEscala[2][0] = 0;
+        matrizEscala[2][1] = 0;
+        matrizEscala[2][2] = 1;
+        
+        matrix = producto(matrizEscala,matrix);
+
     }     
     
     
-    void rotar(double angulo){
-        // Matriz Identidad
-        matrix[0][0] = Math.cos(angulo) ;    // cos +
-        matrix[0][1] = Math.sin(angulo)*-1;    // -sen +
-        matrix[0][2] = 0;    // 0
-        matrix[1][0] = Math.sin(angulo);
-        matrix[1][1] = Math.cos(angulo);
-        matrix[1][2] = 0;
-        matrix[2][0] = 0;
-        matrix[2][1] = 0;
-        matrix[2][2] = 1;
+    void rotacion(double angulo){
+        double[][] matrizRotacion = new double[3][3];
+        matrizRotacion[0][0] = Math.cos(angulo) ;    // cos +
+        matrizRotacion[0][1] = Math.sin(angulo)*-1;    // -sen +
+        matrizRotacion[0][2] = 0;    // 0
+        matrizRotacion[1][0] = Math.sin(angulo);
+        matrizRotacion[1][1] = Math.cos(angulo);
+        matrizRotacion[1][2] = 0;
+        matrizRotacion[2][0] = 0;
+        matrizRotacion[2][1] = 0;
+        matrizRotacion[2][2] = 1;
+        
+        
+        matrix = producto(matrizRotacion,matrix);
     }     
 
     
     void traslacion(int tx, int ty){
-        // Matriz Identidad
-        matrix[0][0] = 1 ;    // cos +
-        matrix[0][1] = 0;    // -sen +
-        matrix[0][2] = tx;    // 0
-        matrix[1][0] = 0;
-        matrix[1][1] = 1;
-        matrix[1][2] = ty;
-        matrix[2][0] = 0;
-        matrix[2][1] = 0;
-        matrix[2][2] = 1;
+        double[][] matrizTraslacion = new double[3][3];
+        matrizTraslacion[0][0] = 1 ;    // cos +
+        matrizTraslacion[0][1] = 0;    // -sen +
+        matrizTraslacion[0][2] = tx;    // 0
+        matrizTraslacion[1][0] = 0;
+        matrizTraslacion[1][1] = 1;
+        matrizTraslacion[1][2] = ty;
+        matrizTraslacion[2][0] = 0;
+        matrizTraslacion[2][1] = 0;
+        matrizTraslacion[2][2] = 1;
+        
+        matrix = producto(matrizTraslacion,matrix);
     }         
     
 }
