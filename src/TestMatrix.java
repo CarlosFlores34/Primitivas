@@ -15,8 +15,8 @@ public class TestMatrix {
         double[] punto = new double[3];
         double[] punto2 = new double[3];
         
-        punto[0]=1;  // x
-        punto[1]=1;  // y
+        punto[0]=3;  // x
+        punto[1]=0;  // y
         punto[2]=1;  // h
                 
         System.out.printf("x = %5.2f, y = %5.2f, h =%5.2f\n", punto[0], punto[1], punto[2]);
@@ -24,9 +24,7 @@ public class TestMatrix {
         Matrix m = new Matrix();
         m.loadIdentity();
         
-        m.escalar(2);
-        m.traslacion(2,3);
-        m.rotacion(45);
+        m.rotacion(90);
         
         punto2 = m.pprima(punto);
         

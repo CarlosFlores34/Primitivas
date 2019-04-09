@@ -46,8 +46,7 @@ public class Matrix {
 
         resultante[0][2] = matriz[0][2]*matrizMul[0][0] + matriz[1][2]*matrizMul[0][1] + matriz[2][2]*matrizMul[0][2];
         resultante[1][2] = matriz[0][2]*matrizMul[1][0] + matriz[1][2]*matrizMul[1][1] + matriz[2][2]*matrizMul[1][2];
-        resultante[2][2] = matriz[0][2]*matrizMul[2][0] + matriz[1][2]*matrizMul[2][1] + matriz[2][2]*matrizMul[2][2];
-                    
+        resultante[2][2] = matriz[0][2]*matrizMul[2][0] + matriz[1][2]*matrizMul[2][1] + matriz[2][2]*matrizMul[2][2];    
         
         return resultante;
     }
@@ -104,16 +103,15 @@ public class Matrix {
     
     void rotacion(double angulo){
         double[][] matrizRotacion = new double[3][3];
-        matrizRotacion[0][0] = Math.cos(angulo) ;    // cos +
-        matrizRotacion[0][1] = Math.sin(angulo)*-1;    // -sen +
+        matrizRotacion[0][0] = Math.sin(Math.toRadians(angulo)) ;    // cos +
+        matrizRotacion[0][1] = Math.sin(Math.toRadians(angulo))*-1;  // -sen +
         matrizRotacion[0][2] = 0;    // 0
-        matrizRotacion[1][0] = Math.sin(angulo);
-        matrizRotacion[1][1] = Math.cos(angulo);
+        matrizRotacion[1][0] = Math.sin(Math.toRadians(angulo));     // sen
+        matrizRotacion[1][1] = Math.cos(Math.toRadians(angulo));     // cos
         matrizRotacion[1][2] = 0;
         matrizRotacion[2][0] = 0;
         matrizRotacion[2][1] = 0;
         matrizRotacion[2][2] = 1;
-        
         
         matrix = producto(matrizRotacion,matrix);
     }     
