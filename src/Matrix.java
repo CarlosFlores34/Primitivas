@@ -22,9 +22,9 @@ public class Matrix {
     double[] pprima(double punto[]){
         double[] res = new double[3];
         
-        xp = punto[0]*matrix[0][0]+punto[1]*matrix[0][1]+punto[2]*matrix[0][2];     // | X | =  | A  B  C |   | x |
-        yp = punto[0]*matrix[1][0]+punto[1]*matrix[1][1]+punto[2]*matrix[1][2];     // | Y | =  | D  E  F | * | y |
-        hp = punto[0]*matrix[2][0]+punto[1]*matrix[2][1]+punto[2]*matrix[2][2];     // | H | =  | G  H  I |   | z |
+        xp = punto[0]*matrix[0][0]+punto[1]*matrix[0][1]+punto[2]*matrix[0][2];     // | x' | =  | A  B  C |   | x |
+        yp = punto[0]*matrix[1][0]+punto[1]*matrix[1][1]+punto[2]*matrix[1][2];     // | y' | =  | D  E  F | * | y |
+        hp = punto[0]*matrix[2][0]+punto[1]*matrix[2][1]+punto[2]*matrix[2][2];     // | h' | =  | G  H  I |   | z |
         
         res[0] = xp;
         res[1] = yp;
@@ -103,7 +103,7 @@ public class Matrix {
     
     void rotacion(double angulo){
         double[][] matrizRotacion = new double[3][3];
-        matrizRotacion[0][0] = Math.sin(Math.toRadians(angulo)) ;    // cos +
+        matrizRotacion[0][0] = Math.cos(Math.toRadians(angulo)) ;    // cos +
         matrizRotacion[0][1] = Math.sin(Math.toRadians(angulo))*-1;  // -sen +
         matrizRotacion[0][2] = 0;    // 0
         matrizRotacion[1][0] = Math.sin(Math.toRadians(angulo));     // sen
