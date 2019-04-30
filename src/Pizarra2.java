@@ -245,16 +245,18 @@ public class Pizarra2 extends javax.swing.JFrame {
     public void guardarVectores() {        
         FileWriter fw = null;
         String linea="";
+
         try {
             fw = new FileWriter("vectores.txt");
-            for(int i=0;i<aFiguras.size();i++){
+            for (int i=0;i<aFiguras.size();i++){
                 Figura f = aFiguras.get(i);
                 
                 if (f instanceof Linea){
                     Linea l = (Linea)f;
+                   
                     linea=String.format("L,%.0f,%.0f,%.0f,%.0f,%x\n",l.punto1.getX(),l.punto1.getY(),
                                                           l.punto2.getX(),l.punto2.getY(),
-                                                          l.color.getRGB());
+                                                          l.color.getRGB());                                        
                 } 
                 
                 if (f instanceof TrianguloR){
@@ -363,17 +365,17 @@ public class Pizarra2 extends javax.swing.JFrame {
     
     private void dibujarLinea(Point _p1, Point _p2, Color color) {
              long inicio=0, fin=0;
-             inicio = System.nanoTime();
+             //inicio = System.nanoTime();
              // lineaMejorada(_p1.x,_p1.y,_p2.x,_p2.y,color);
-             fin    = System.nanoTime();
+             //fin    = System.nanoTime();
              
-             System.out.printf("Tiempo transcurrido, simple: %d\n",(fin-inicio));
+             //System.out.printf("Tiempo transcurrido, simple: %d\n",(fin-inicio));
              
-             inicio = System.nanoTime();
+             //inicio = System.nanoTime();
              lineFast(_p1.x,_p1.y,_p2.x,_p2.y,color);
-             fin    = System.nanoTime();            
+             //fin    = System.nanoTime();            
              
-             System.out.printf("Tiempo transcurrido, fast  : %d\n",(fin-inicio));             
+             //System.out.printf("Tiempo transcurrido, fast  : %d\n",(fin-inicio));             
     }    
     
     
@@ -409,13 +411,20 @@ public class Pizarra2 extends javax.swing.JFrame {
             p2.x=evt.getX();
             p2.y=evt.getY();
             bP2 = true;                       
-            System.out.println("Segundo punto");
+            
             dibujarLinea(p2,p2,color);
             
             if(figura == LINEA){
-                Linea l = new Linea(p1,p2, color);            
+                
+                Linea l = new Linea(p1,p2, color); 
+                
+                String linea=String.format("L,%.0f,%.0f,%.0f,%.0f,%x\n",l.punto1.getX(),l.punto1.getY(),
+                                                          l.punto2.getX(),l.punto2.getY(),
+                                                          l.color.getRGB());
+                    
+                
                 aFiguras.add(l);
-                listModel.addElement("Linea");            
+                listModel.addElement(linea);            
             }
         } 
         
@@ -423,7 +432,7 @@ public class Pizarra2 extends javax.swing.JFrame {
             p1.x=evt.getX();
             p1.y=evt.getY();
             bP1 = true;
-            System.out.println("Primer punto");
+
             dibujarLinea(p1,p1,color);
         }         
         
